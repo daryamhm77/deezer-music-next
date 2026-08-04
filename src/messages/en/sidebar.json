@@ -1,0 +1,16 @@
+{
+  "title": "Your Library",
+  "createPlaylist": "Create playlist",
+  "createPlaylistAriaLabel": "Create playlist",
+  "playlistNamePlaceholder": "Playlist name",
+  "toggleAriaLabel": "Toggle library",
+  "emptyTitle": "Create your first playlist",
+  "emptyDescription": "Click + to create a playlist",
+  "noPlaylists": "No playlists yet",
+  "songsCount": "{count} songs",
+  "playlistsCount": "{count} playlists",
+  "favoriteSongs": "Favorite songs",
+  "favoriteArtists": "Favorite singers",
+  "playlists": "Playlists",
+  "emptyFavorites": "No favorite songs yet"
+}

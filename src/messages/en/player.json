@@ -1,0 +1,22 @@
+{
+  "coverAlt": "Album cover",
+  "play": "Play",
+  "pause": "Pause",
+  "previous": "Previous",
+  "next": "Next",
+  "repeat": "Repeat",
+  "repeatOne": "Repeat one",
+  "queue": "Queue",
+  "mute": "Mute",
+  "unmute": "Unmute",
+  "noPreview": "No preview available for this track",
+  "nowPlaying": "Now Playing",
+  "queueList": "Queue List",
+  "byArtist": "By {artist}",
+  "lyrics": "Lyrics",
+  "closeLyrics": "Close lyrics",
+  "lyricsLoading": "Loading lyrics...",
+  "lyricsNotFound": "Lyrics not found for this track.",
+  "lyricsError": "Could not load lyrics.",
+  "instrumental": "This track is instrumental."
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Choose your favorite singers",
+  "subtitle": "Pick at least 10 artists so we can build playlists for you.",
+  "searchPlaceholder": "Search singers...",
+  "suggested": "Suggested artists",
+  "selected": "Selected",
+  "progress": "{count} / 10 selected",
+  "continue": "Create my playlists",
+  "creating": "Creating your playlists...",
+  "minRequired": "Select at least 10 artists to continue",
+  "remove": "Remove",
+  "emptySearch": "No artists found"
+}

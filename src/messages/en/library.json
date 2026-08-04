@@ -1,0 +1,18 @@
+{
+  "playlistsTitle": "Your playlists",
+  "createPlaylist": "Create playlist",
+  "playlistName": "Playlist name",
+  "create": "Create",
+  "delete": "Delete",
+  "emptyPlaylist": "This playlist is empty",
+  "addToPlaylist": "Add to playlist",
+  "favoriteSongsTitle": "Favorite songs",
+  "favoriteArtistsTitle": "Favorite singers",
+  "emptyFavorites": "Nothing saved yet",
+  "remove": "Remove",
+  "favoriteSong": "Favorite song",
+  "unfavoriteSong": "Remove favorite song",
+  "favoriteArtist": "Favorite singer",
+  "unfavoriteArtist": "Remove favorite singer",
+  "loginRequired": "Log in to use your library"
+}

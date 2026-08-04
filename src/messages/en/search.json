@@ -1,0 +1,10 @@
+{
+  "title": "Search",
+  "emptyPrompt": "Search for songs or singers",
+  "noResults": "No results for \"{query}\"",
+  "songs": "Songs",
+  "artists": "Singers",
+  "loadError": "Failed to search",
+  "follow": "Follow",
+  "following": "Following"
+}

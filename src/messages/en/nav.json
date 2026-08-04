@@ -1,0 +1,11 @@
+{
+  "brand": "SeaMusicPlayer",
+  "searchPlaceholder": "What do you want to play?",
+  "homeAriaLabel": "Home",
+  "logoAriaLabel": "SeaMusicPlayer",
+  "menu": "Account menu",
+  "favoriteSongs": "Favorite songs",
+  "favoriteArtists": "Favorite singers",
+  "playlists": "Playlists",
+  "logOut": "Logout"
+}
