@@ -1,6 +1,13 @@
-export async function deezerFetch<T>(path: string): Promise<T> {
+export async function deezerFetch<T>(
+  path: string,
+  options?: { revalidate?: number | false },
+): Promise<T> {
+  const revalidate = options?.revalidate;
+
   const response = await fetch(`https://api.deezer.com${path}`, {
-    next: { revalidate: 60 },
+    ...(revalidate === false
+      ? { cache: "no-store" as const }
+      : { next: { revalidate: revalidate ?? 60 } }),
   });
 
   if (!response.ok) {

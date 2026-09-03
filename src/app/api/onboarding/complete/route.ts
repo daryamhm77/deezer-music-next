@@ -14,6 +14,9 @@ import { completeOnboarding } from "@/connections/user-preferences.repository";
 import { ArtistSchema, type Song } from "@/contracts";
 import { requireUserId } from "@/lib/auth-session";
 
+/** Session / mutation data — never cache across users. */
+export const dynamic = "force-dynamic";
+
 const CompleteOnboardingSchema = z.object({
   artists: z.array(ArtistSchema).min(10).max(50),
 });

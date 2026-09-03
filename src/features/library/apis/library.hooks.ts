@@ -87,6 +87,26 @@ export function useAddSongToPlaylistMutation() {
   });
 }
 
+export function useRemoveSongFromPlaylistMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (input: { playlistId: string; songId: string }) => {
+      const response = await fetch(
+        `/api/playlists/${input.playlistId}/tracks?songId=${encodeURIComponent(input.songId)}`,
+        { method: "DELETE" },
+      );
+      return parseJson<Playlist>(response);
+    },
+    onSuccess: (_data, variables) => {
+      void queryClient.invalidateQueries({ queryKey: ["playlists"] });
+      void queryClient.invalidateQueries({
+        queryKey: ["playlists", variables.playlistId],
+      });
+    },
+  });
+}
+
 export function useFavoriteSongsQuery(enabled = true) {
   return useQuery({
     queryKey: ["favorite-songs"],

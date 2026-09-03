@@ -14,11 +14,18 @@ import {
   useToggleFavoriteArtistMutation,
   useToggleFavoriteSongMutation,
 } from "@/features/library/apis";
+import {
+  OpenInDeezerButton,
+  ShareButton,
+} from "@/components/shared/share-actions";
 import type { Song } from "@/contracts";
 import { useSession } from "@/lib/auth-client";
+import { IMAGE_BLUR_DATA_URL, SONG_COVER_SIZES } from "@/lib/image";
 import homeMessages from "@/messages/en/home.json";
 import libraryMessages from "@/messages/en/library.json";
+import shareMessages from "@/messages/en/share.json";
 import { usePlayer } from "@/providers/player-provider";
+import { buildSongSharePayload } from "@/utils/share";
 
 type SongCardGridProps = {
   songs: Song[];
@@ -66,7 +73,7 @@ export function SongCardGrid({ songs }: SongCardGridProps) {
               aria-label={homeMessages.playAriaLabel}
               onClick={() => playSong(songs, index)}
             >
-              <IoMdPlay size={22} className="text-black" />
+              <IoMdPlay size={22} className="text-white" />
             </button>
 
             {isLoggedIn ? (
@@ -169,6 +176,9 @@ export function SongCardGrid({ songs }: SongCardGridProps) {
                 alt={song.title}
                 width={500}
                 height={500}
+                sizes={SONG_COVER_SIZES}
+                placeholder="blur"
+                blurDataURL={IMAGE_BLUR_DATA_URL}
                 className="h-50 w-full rounded-md object-cover"
               />
               <div className="mt-2">
@@ -178,6 +188,15 @@ export function SongCardGrid({ songs }: SongCardGridProps) {
                 </p>
               </div>
             </button>
+
+            <div className="mt-2 flex items-center gap-1">
+              <OpenInDeezerButton url={song.external_url} compact />
+              <ShareButton
+                compact
+                {...buildSongSharePayload(song)}
+                label={shareMessages.shareSong}
+              />
+            </div>
           </div>
         );
       })}

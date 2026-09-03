@@ -120,8 +120,14 @@ Pages stay thin; business UI and data hooks live under `src/features/`.
 | `/favorites/songs` | Favorite songs |
 | `/favorites/artists` | Favorite singers |
 
-## Notes
+## Performance / security
 
-- Logged-in users who have not finished onboarding are redirected to `/onboarding`.
-- Lyrics are fetched from [LRCLIB](https://lrclib.net/); availability varies by track.
-- Prefer opening tracks on Deezer (`external_url`) for full listening — this app does not support downloads.
+| Item | Where |
+| --- | --- |
+| Streaming guest home | `(public)/page.tsx` + `guest-home-sections.tsx` (Suspense per section) |
+| `loading.tsx` / `error.tsx` | `(public)`, `(private)`, `(auth)`, `(onboarding)`, `search` |
+| Image `sizes` + blur | `lib/image.ts`, guest grids, song cards |
+| Prefetch | Navbar home links + `router.prefetch('/search')` |
+| Light auth | `(auth)/layout` — no player/query chrome |
+| Session no-store | `lib/http.privateJson` on library/onboarding/recommendations |
+| Deezer rate limit | `lib/rate-limit.ts` on `/api/deezer/*` (429 + Retry-After) |

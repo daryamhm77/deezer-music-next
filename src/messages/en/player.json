@@ -9,7 +9,7 @@
   "queue": "Queue",
   "mute": "Mute",
   "unmute": "Unmute",
-  "noPreview": "No preview available for this track",
+  "noPreview": "No preview — open the full track on Deezer",
   "nowPlaying": "Now Playing",
   "queueList": "Queue List",
   "byArtist": "By {artist}",

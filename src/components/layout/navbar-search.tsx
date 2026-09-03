@@ -13,6 +13,10 @@ export function NavbarSearch() {
   const [value, setValue] = useState("");
 
   useEffect(() => {
+    router.prefetch(PATHS.search);
+  }, [router]);
+
+  useEffect(() => {
     if (pathname === PATHS.search) {
       const query = new URLSearchParams(window.location.search).get("q") ?? "";
       setValue(query);

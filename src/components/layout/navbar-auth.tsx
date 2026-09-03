@@ -47,7 +47,7 @@ export function NavbarAuth() {
         </Link>
         <Link
           href={PATHS.login}
-          className="grid h-11 place-items-center rounded-full bg-white px-8 font-bold text-gray-950 hover:scale-105"
+          className="grid h-11 place-items-center rounded-full bg-white px-8 font-bold text-black hover:scale-105"
         >
           {authMessages.logIn}
         </Link>
@@ -64,7 +64,7 @@ export function NavbarAuth() {
         aria-label={navMessages.menu}
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
-        className="grid h-11 w-11 cursor-pointer place-items-center overflow-hidden rounded-full bg-primary text-sm font-bold text-black hover:scale-105"
+        className="grid h-11 w-11 cursor-pointer place-items-center overflow-hidden rounded-full bg-primary text-sm font-bold text-white hover:scale-105"
       >
         {user.image ? (
           <Image

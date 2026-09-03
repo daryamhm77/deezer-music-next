@@ -7,6 +7,10 @@ type FrontendLayoutProps = {
   children: React.ReactNode;
 };
 
+/**
+ * Client island chrome shared by public + private layouts.
+ * Pages above this can stay Server Components; player/nav/sidebar hydrate here.
+ */
 export function FrontendLayout({ children }: FrontendLayoutProps) {
   const { isMusicPlaying } = usePlayer();
 

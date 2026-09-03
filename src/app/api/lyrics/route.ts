@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+/** Session / mutation data — never cache across users. */
+export const dynamic = "force-dynamic";
+
 type LrcLibResult = {
   id: number;
   trackName: string;

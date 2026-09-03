@@ -3,6 +3,12 @@ import { NextResponse } from "next/server";
 import { buildHomeRecommendations } from "@/connections/deezer.recommendations";
 import { requireUserId } from "@/lib/auth-session";
 
+/**
+ * Personalized per user — never ISR / never shared cache.
+ * Taste would leak across users if this response were cached globally.
+ */
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const userId = await requireUserId();
   if (!userId) {
@@ -14,7 +20,14 @@ export async function GET() {
 
   try {
     const data = await buildHomeRecommendations(userId);
-    return NextResponse.json({ status: 200, data });
+    return NextResponse.json(
+      { status: 200, data },
+      {
+        headers: {
+          "Cache-Control": "private, no-store",
+        },
+      },
+    );
   } catch (error) {
     return NextResponse.json(
       {

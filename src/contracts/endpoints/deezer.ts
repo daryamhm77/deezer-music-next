@@ -59,24 +59,7 @@ export const CreatePlaylistSchema = z.object({
   description: z.string().max(200).optional(),
 });
 
-export const ApiOkSchema = <T extends z.ZodType>(data: T) =>
-  z.object({
-    status: z.literal(200),
-    data,
-  });
-
-export const ApiErrorSchema = z.object({
-  status: z.union([z.literal(401), z.literal(404), z.literal(500)]),
-  message: z.string(),
-});
-
-export const SongsListResponseSchema = z.discriminatedUnion("status", [
-  ApiOkSchema(z.array(SongSchema)),
-  ApiErrorSchema,
-]);
-
 export type Song = z.infer<typeof SongSchema>;
 export type Artist = z.infer<typeof ArtistSchema>;
 export type Genre = z.infer<typeof GenreSchema>;
 export type Playlist = z.infer<typeof PlaylistSchema>;
-export type SongsListResponse = z.infer<typeof SongsListResponseSchema>;

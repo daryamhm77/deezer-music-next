@@ -6,6 +6,9 @@ import {
 } from "@/connections/library.repository";
 import { requireUserId } from "@/lib/auth-session";
 
+/** Session / mutation data — never cache across users. */
+export const dynamic = "force-dynamic";
+
 type Params = {
   params: Promise<{ id: string }>;
 };

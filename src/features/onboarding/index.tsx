@@ -160,7 +160,7 @@ export function OnboardingFeature() {
           type="button"
           disabled={!canContinue || completeOnboarding.isPending}
           onClick={handleContinue}
-          className="w-full max-w-md cursor-pointer rounded-full bg-primary py-3 font-bold text-black disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full max-w-md cursor-pointer rounded-full bg-primary py-3 font-bold text-white disabled:cursor-not-allowed disabled:opacity-50"
         >
           {completeOnboarding.isPending
             ? onboardingMessages.creating

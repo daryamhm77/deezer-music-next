@@ -11,6 +11,10 @@ type OnboardingGateProps = {
   children: React.ReactNode;
 };
 
+/**
+ * Redirects logged-in users who still need onboarding.
+ * Guests always get children immediately so public SSR HTML stays crawlable.
+ */
 export function OnboardingGate({ children }: OnboardingGateProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -51,41 +55,33 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
     router,
   ]);
 
-  if (sessionPending) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-secondary-text">
-        Loading...
-      </div>
-    );
+  // Never replace guest / pending HTML with a loading shell — crawlers need content.
+  if (!isLoggedIn) {
+    if (isOnboardingRoute) {
+      return (
+        <div className="flex min-h-screen items-center justify-center text-secondary-text">
+          Redirecting to login...
+        </div>
+      );
+    }
+    return children;
   }
 
-  if (!isLoggedIn && isOnboardingRoute) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-secondary-text">
-        Redirecting to login...
-      </div>
-    );
+  if (statusPending || !status) {
+    return children;
   }
 
-  if (isLoggedIn && (statusPending || !status)) {
+  if (!status.onboardingCompleted && !isOnboardingRoute) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-secondary-text">
-        Loading your library...
-      </div>
-    );
-  }
-
-  if (isLoggedIn && status && !status.onboardingCompleted && !isOnboardingRoute) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-secondary-text">
+      <div className="flex min-h-screen items-center justify-center text-secondary-text">
         Redirecting to setup...
       </div>
     );
   }
 
-  if (isLoggedIn && status?.onboardingCompleted && isOnboardingRoute) {
+  if (status.onboardingCompleted && isOnboardingRoute) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-secondary-text">
+      <div className="flex min-h-screen items-center justify-center text-secondary-text">
         Redirecting home...
       </div>
     );

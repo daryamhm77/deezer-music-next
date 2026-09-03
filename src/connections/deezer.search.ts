@@ -11,6 +11,7 @@ export async function searchDeezerSongs(query: string, limit = 24) {
   const encoded = encodeURIComponent(query);
   const result = await deezerFetch<ListResponse>(
     `/search/track?q=${encoded}&limit=${limit}`,
+    { revalidate: false },
   );
 
   return (result.data ?? [])

@@ -165,7 +165,7 @@ export function UserHome() {
                     </div>
                   )}
                   <span className="absolute right-5 bottom-16 grid h-10 w-10 place-items-center rounded-full bg-primary opacity-0 transition group-hover:opacity-100">
-                    <IoMdPlay className="text-black" size={18} />
+                    <IoMdPlay className="text-white" size={18} />
                   </span>
                   <p className="mt-2 truncate font-semibold text-primary-text">
                     {playlist.name}

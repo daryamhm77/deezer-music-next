@@ -7,7 +7,10 @@ import { FaUserPlus } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 
 import { SongCardGrid } from "@/features/home/components/song-card-grid";
-import { useSearchQuery } from "@/features/search/apis";
+import {
+  useSearchQuery,
+  type SearchResults,
+} from "@/features/search/apis/use-search.query";
 import {
   useFavoriteArtistsQuery,
   useToggleFavoriteArtistMutation,
@@ -18,10 +21,10 @@ import navMessages from "@/messages/en/nav.json";
 import searchMessages from "@/messages/en/search.json";
 import { PATHS } from "@/routes/paths";
 
-function MobileSearchField() {
+function MobileSearchField({ initialQuery = "" }: { initialQuery?: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const urlQuery = searchParams.get("q") ?? "";
+  const urlQuery = searchParams.get("q") ?? initialQuery;
   const [value, setValue] = useState(urlQuery);
 
   useEffect(() => {
@@ -60,11 +63,17 @@ function MobileSearchField() {
   );
 }
 
-export function SearchFeature() {
-  const searchParams = useSearchParams();
-  const query = searchParams.get("q")?.trim() ?? "";
+type SearchFeatureProps = {
+  query: string;
+  initialData?: SearchResults | null;
+};
+
+export function SearchFeature({ query, initialData = null }: SearchFeatureProps) {
   const { data: session } = useSession();
-  const { data, isLoading, isError, error, isFetching } = useSearchQuery(query);
+  const { data, isLoading, isError, error, isFetching } = useSearchQuery(
+    query,
+    initialData,
+  );
   const { data: favoriteArtists } = useFavoriteArtistsQuery(Boolean(session));
   const toggleFavoriteArtist = useToggleFavoriteArtistMutation();
 
@@ -85,7 +94,7 @@ export function SearchFeature() {
     );
   }
 
-  if (isLoading || isFetching) {
+  if ((isLoading || isFetching) && !data) {
     return (
       <div className="space-y-8 p-4">
         <div className="h-8 w-48 animate-pulse rounded bg-hover" />
@@ -98,7 +107,7 @@ export function SearchFeature() {
     );
   }
 
-  if (isError) {
+  if (isError && !data) {
     return (
       <div className="p-4">
         <h2 className="text-2xl text-white">
@@ -115,7 +124,8 @@ export function SearchFeature() {
   if (!hasResults) {
     return (
       <div className="p-4">
-        <h1 className="text-2xl font-bold text-white">
+        <MobileSearchField initialQuery={query} />
+        <h1 className="mt-4 text-2xl font-bold text-white">
           {searchMessages.noResults.replace("{query}", query)}
         </h1>
       </div>
@@ -124,7 +134,7 @@ export function SearchFeature() {
 
   return (
     <div className="space-y-10 p-4 font-semibold">
-      <MobileSearchField />
+      <MobileSearchField initialQuery={query} />
       <h1 className="text-2xl text-white">
         {searchMessages.title}:{" "}
         <span className="text-primary">{query}</span>

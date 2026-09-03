@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { FaTrash } from "react-icons/fa";
 
 import {
   useCreatePlaylistMutation,
@@ -55,7 +56,7 @@ export function PlaylistsFeature() {
             await createPlaylist.mutateAsync({ name: name.trim() });
             setName("");
           }}
-          className="cursor-pointer rounded-full bg-primary px-6 py-2 font-bold text-black disabled:opacity-60"
+          className="cursor-pointer rounded-full bg-primary px-6 py-2 font-bold text-white disabled:opacity-60"
         >
           {libraryMessages.create}
         </button>
@@ -66,7 +67,7 @@ export function PlaylistsFeature() {
           {playlists.map((playlist) => (
             <div
               key={playlist.id}
-              className="flex items-center justify-between rounded-md bg-background px-4 py-3 hover:bg-hover"
+              className="flex items-center justify-between rounded-md bg-black/25 px-4 py-3 hover:bg-hover"
             >
               <Link href={PATHS.playlist(playlist.id)} className="flex-1">
                 <p className="font-semibold text-primary-text">{playlist.name}</p>
@@ -76,10 +77,11 @@ export function PlaylistsFeature() {
               </Link>
               <button
                 type="button"
-                className="cursor-pointer text-sm text-secondary-text hover:text-danger"
+                className="grid h-8 w-8 shrink-0 cursor-pointer place-items-center text-secondary-text hover:text-danger"
+                aria-label={libraryMessages.delete}
                 onClick={() => deletePlaylist.mutate(playlist.id)}
               >
-                {libraryMessages.delete}
+                <FaTrash size={14} />
               </button>
             </div>
           ))}

@@ -59,14 +59,14 @@ export function SignUpForm() {
       </div>
 
       <div className="mb-6 flex w-full items-center gap-3 text-secondary-text">
-        <span className="h-px flex-1 bg-neutral-600" />
+        <span className="h-px flex-1 bg-border" />
         <span className="text-sm">{authMessages.or}</span>
-        <span className="h-px flex-1 bg-neutral-600" />
+        <span className="h-px flex-1 bg-border" />
       </div>
 
       <form onSubmit={onSubmit} className="w-full">
         {message ? (
-          <p className="mb-4 bg-primary py-1 text-center font-semibold text-black">
+          <p className="mb-4 bg-primary py-1 text-center font-semibold text-white">
             {message}
           </p>
         ) : null}
@@ -75,27 +75,27 @@ export function SignUpForm() {
           type="text"
           placeholder={authMessages.namePlaceholder}
           autoComplete="name"
-          className="mb-6 w-full rounded-md border border-neutral-600 p-2 text-primary-text outline-none placeholder:text-neutral-600 focus:border-secondary-text"
+          className="mb-6 w-full rounded-md border border-border p-2 text-primary-text outline-none placeholder:text-secondary-text focus:border-secondary-text"
           {...register("name")}
         />
         <input
           type="email"
           placeholder={authMessages.emailPlaceholder}
           autoComplete="email"
-          className="mb-6 w-full rounded-md border border-neutral-600 p-2 text-primary-text outline-none placeholder:text-neutral-600 focus:border-secondary-text"
+          className="mb-6 w-full rounded-md border border-border p-2 text-primary-text outline-none placeholder:text-secondary-text focus:border-secondary-text"
           {...register("email")}
         />
         <input
           type="password"
           placeholder={authMessages.passwordPlaceholder}
           autoComplete="new-password"
-          className="mb-6 w-full rounded-md border border-neutral-600 p-2 text-primary-text outline-none placeholder:text-neutral-600 focus:border-secondary-text"
+          className="mb-6 w-full rounded-md border border-border p-2 text-primary-text outline-none placeholder:text-secondary-text focus:border-secondary-text"
           {...register("password")}
         />
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full cursor-pointer rounded-full bg-primary py-3 font-bold text-black disabled:opacity-60"
+          className="w-full cursor-pointer rounded-full bg-primary py-3 font-bold text-white disabled:opacity-60"
         >
           {authMessages.continue}
         </button>

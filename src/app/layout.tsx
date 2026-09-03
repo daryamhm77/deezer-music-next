@@ -1,5 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
+import { getSiteUrl } from "@/lib/seo";
 
 import "./globals.css";
 
@@ -13,9 +15,41 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = getSiteUrl();
+
+export const viewport: Viewport = {
+  themeColor: "#2A3D3E",
+};
+
 export const metadata: Metadata = {
-  title: "SeaMusicPlayer",
-  description: "SeaMusicPlayer — discover and play music",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "SeaMusicPlayer",
+    template: "%s · SeaMusicPlayer",
+  },
+  description: "Discover and play music previews. Powered by Deezer.",
+  applicationName: "SeaMusicPlayer",
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/apple-touch-icon.png" }],
+  },
+  openGraph: {
+    type: "website",
+    siteName: "SeaMusicPlayer",
+    locale: "en_US",
+    title: "SeaMusicPlayer",
+    description: "Discover and play music previews. Powered by Deezer.",
+    url: siteUrl,
+  },
+  twitter: {
+    card: "summary",
+    title: "SeaMusicPlayer",
+    description: "Discover and play music previews. Powered by Deezer.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

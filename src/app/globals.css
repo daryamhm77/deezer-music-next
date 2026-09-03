@@ -1,14 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-black: #000000;
-  --color-primary: #14b8a6;
-  --color-background: #0b1220;
-  --color-hover: #142033;
-  --color-primary-text: #e8eef7;
-  --color-secondary-text: #93a4bd;
-  --color-border: #1e2a3d;
-  --color-danger: #e02424;
+  --color-black: #172122;
+  --color-white: #f1ebe0;
+  --color-primary: #a92628;
+  --color-burgundy: #77292b;
+  --color-accent: #b86c41;
+  --color-background: #2a3d3e;
+  --color-hover: #364b4c;
+  --color-primary-text: #e8e0d2;
+  --color-secondary-text: #8a816d;
+  --color-border: #3f5354;
+  --color-danger: #a92628;
   --spacing-13: 3.25rem;
   --spacing-15: 3.75rem;
   --spacing-18: 4.5rem;
@@ -18,10 +21,62 @@
   --z-index-100: 100;
 }
 
+html {
+  min-height: 100%;
+  background-color: var(--color-black);
+}
+
 body {
-  background: var(--color-background);
+  min-height: 100%;
   color: var(--color-primary-text);
   font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-black);
+  background-image:
+    radial-gradient(
+      ellipse 90% 70% at 12% 8%,
+      color-mix(in srgb, var(--color-burgundy) 42%, transparent),
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 75% 55% at 92% 18%,
+      color-mix(in srgb, var(--color-accent) 24%, transparent),
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse 80% 70% at 55% 100%,
+      color-mix(in srgb, var(--color-primary) 18%, transparent),
+      transparent 58%
+    ),
+    linear-gradient(
+      165deg,
+      var(--color-black) 0%,
+      var(--color-background) 48%,
+      color-mix(in srgb, var(--color-black) 72%, var(--color-background)) 100%
+    );
+  background-size: 180% 180%, 160% 160%, 170% 170%, 100% 100%;
+  background-position: 0% 20%, 100% 0%, 50% 100%, 0 0;
+  animation: vinyl-bg 22s ease-in-out infinite;
+}
+
+@keyframes vinyl-bg {
+  0%,
+  100% {
+    background-position: 0% 18%, 100% 0%, 48% 100%, 0 0;
+  }
+  50% {
+    background-position: 36% 0%, 62% 38%, 68% 72%, 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+  }
+}
+
+::selection {
+  background: var(--color-primary);
+  color: var(--color-white);
 }
 
 .scrollbar-hide::-webkit-scrollbar {

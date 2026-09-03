@@ -1,11 +1,9 @@
 {
-  "newSongs": "New Songs",
   "topSongs": "Top songs",
   "topGenres": "Top genres",
   "topSingers": "Top singers",
   "byArtist": "By {artist}",
   "playAriaLabel": "Play song",
-  "loadError": "Failed to load songs",
   "exploreError": "Failed to load music picks",
   "recommendationsError": "Failed to load your recommendations",
   "loginPrompt": "Log in to save favorites and create playlists",

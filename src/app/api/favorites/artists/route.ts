@@ -6,28 +6,26 @@ import {
   removeFavoriteArtist,
 } from "@/connections/library.repository";
 import { ArtistSchema } from "@/contracts";
+import { privateJson } from "@/lib/http";
 import { requireUserId } from "@/lib/auth-session";
+
+/** Session / mutation data — never cache across users. */
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const userId = await requireUserId();
   if (!userId) {
-    return NextResponse.json(
-      { status: 401, message: "Unauthorized" },
-      { status: 401 },
-    );
+    return privateJson({ status: 401, message: "Unauthorized" }, { status: 401 });
   }
 
   const data = await listFavoriteArtists(userId);
-  return NextResponse.json({ status: 200, data });
+  return privateJson({ status: 200, data });
 }
 
 export async function POST(request: Request) {
   const userId = await requireUserId();
   if (!userId) {
-    return NextResponse.json(
-      { status: 401, message: "Unauthorized" },
-      { status: 401 },
-    );
+    return privateJson({ status: 401, message: "Unauthorized" }, { status: 401 });
   }
 
   const body = await request.json();
@@ -41,16 +39,13 @@ export async function POST(request: Request) {
   }
 
   const data = await addFavoriteArtist(userId, parsed.data);
-  return NextResponse.json({ status: 200, data });
+  return privateJson({ status: 200, data });
 }
 
 export async function DELETE(request: Request) {
   const userId = await requireUserId();
   if (!userId) {
-    return NextResponse.json(
-      { status: 401, message: "Unauthorized" },
-      { status: 401 },
-    );
+    return privateJson({ status: 401, message: "Unauthorized" }, { status: 401 });
   }
 
   const { searchParams } = new URL(request.url);
@@ -64,5 +59,5 @@ export async function DELETE(request: Request) {
   }
 
   await removeFavoriteArtist(userId, artistId);
-  return NextResponse.json({ status: 200, data: { artistId } });
+  return privateJson({ status: 200, data: { artistId } });
 }

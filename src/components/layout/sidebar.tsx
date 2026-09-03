@@ -50,7 +50,7 @@ export function Sidebar() {
       </button>
 
       <aside
-        className={`fixed top-15 left-2 z-30 h-[90vh] w-75 overflow-y-auto rounded-lg bg-background p-2 scrollbar-hide transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed top-15 left-2 z-30 h-[90vh] w-75 overflow-y-auto rounded-lg bg-black/25 p-2 backdrop-blur-sm scrollbar-hide transition-transform duration-300 lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -89,7 +89,7 @@ export function Sidebar() {
                   type="button"
                   onClick={handleCreate}
                   disabled={createPlaylist.isPending}
-                  className="w-full cursor-pointer rounded-full bg-primary py-2 text-sm font-bold text-black disabled:opacity-60"
+                  className="w-full cursor-pointer rounded-full bg-primary py-2 text-sm font-bold text-white disabled:opacity-60"
                 >
                   {sidebarMessages.createPlaylist}
                 </button>
@@ -101,7 +101,7 @@ export function Sidebar() {
                 href={PATHS.favoriteSongs}
                 className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-hover"
               >
-                <div className="grid h-12 w-12 place-items-center rounded-md bg-gradient-to-br from-indigo-500 to-primary text-white">
+                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-gradient-to-br from-burgundy to-accent text-white">
                   <FaHeart size={18} />
                 </div>
                 <div className="min-w-0">
@@ -121,7 +121,7 @@ export function Sidebar() {
                 href={PATHS.favoriteArtists}
                 className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-hover"
               >
-                <div className="grid h-12 w-12 place-items-center rounded-md bg-hover text-primary">
+                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-hover text-primary">
                   <FaUser size={18} />
                 </div>
                 <div className="min-w-0">
@@ -135,7 +135,7 @@ export function Sidebar() {
                 href={PATHS.playlists}
                 className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-hover"
               >
-                <div className="grid h-12 w-12 place-items-center rounded-md bg-hover text-primary">
+                <div className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-hover text-primary">
                   <MdQueueMusic size={22} />
                 </div>
                 <div className="min-w-0">
@@ -152,8 +152,8 @@ export function Sidebar() {
               </Link>
             </div>
 
-            <div className="px-2 pb-2">
-              <h3 className="mb-2 text-xs font-bold tracking-wide text-secondary-text uppercase">
+            <div className="pb-2">
+              <h3 className="mb-2 px-2 text-xs font-bold tracking-wide text-secondary-text uppercase">
                 {sidebarMessages.playlists}
               </h3>
 
@@ -163,10 +163,10 @@ export function Sidebar() {
                     <Link
                       key={playlist.id}
                       href={PATHS.playlist(playlist.id)}
-                      className="flex items-center gap-3 rounded-md px-1 py-2 hover:bg-hover"
+                      className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-hover"
                     >
-                      <div className="grid h-12 w-12 place-items-center rounded-md bg-hover text-secondary-text">
-                        <MdQueueMusic size={20} />
+                      <div className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-hover text-secondary-text">
+                        <MdQueueMusic size={22} />
                       </div>
                       <div className="min-w-0">
                         <p className="truncate font-semibold text-primary-text">
@@ -183,7 +183,7 @@ export function Sidebar() {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-lg bg-hover p-4">
+                <div className="mx-2 rounded-lg bg-hover p-4">
                   <p className="font-bold text-primary-text">
                     {sidebarMessages.emptyTitle}
                   </p>
@@ -195,8 +195,8 @@ export function Sidebar() {
             </div>
 
             {favoriteSongs && favoriteSongs.length > 0 ? (
-              <div className="mt-4 px-2 pb-2">
-                <h3 className="mb-2 text-xs font-bold tracking-wide text-secondary-text uppercase">
+              <div className="mt-4 pb-2">
+                <h3 className="mb-2 px-2 text-xs font-bold tracking-wide text-secondary-text uppercase">
                   {sidebarMessages.favoriteSongs}
                 </h3>
                 <div className="space-y-1">
@@ -204,14 +204,14 @@ export function Sidebar() {
                     <Link
                       key={song.id}
                       href={PATHS.favoriteSongs}
-                      className="flex items-center gap-3 rounded-md px-1 py-2 hover:bg-hover"
+                      className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-hover"
                     >
                       <Image
                         src={song.cover_image_url}
                         alt={song.title}
                         width={48}
                         height={48}
-                        className="h-12 w-12 rounded-md object-cover"
+                        className="h-12 w-12 shrink-0 rounded-md object-cover"
                       />
                       <div className="min-w-0">
                         <p className="truncate font-semibold text-primary-text">

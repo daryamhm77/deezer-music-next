@@ -35,7 +35,7 @@ export function GoogleAuthButton({
   return (
     <div className="w-full">
       {error ? (
-        <p className="mb-4 bg-primary py-1 text-center font-semibold text-black">
+        <p className="mb-4 bg-primary py-1 text-center font-semibold text-white">
           {error}
         </p>
       ) : null}
@@ -43,7 +43,7 @@ export function GoogleAuthButton({
         type="button"
         onClick={handleGoogle}
         disabled={isLoading}
-        className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-full border border-neutral-600 bg-transparent py-3 font-bold text-white hover:border-white disabled:opacity-60"
+        className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-full border border-border bg-transparent py-3 font-bold text-white hover:border-white disabled:opacity-60"
       >
         <FcGoogle size={22} />
         {authMessages.continueWithGoogle}

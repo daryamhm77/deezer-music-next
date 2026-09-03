@@ -12,6 +12,7 @@ export function Navbar() {
       <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-6">
         <Link
           href={PATHS.home}
+          prefetch
           aria-label={navMessages.logoAriaLabel}
           className="flex shrink-0 items-center gap-2 text-primary"
         >
@@ -23,6 +24,7 @@ export function Navbar() {
 
         <Link
           href={PATHS.home}
+          prefetch
           aria-label={navMessages.homeAriaLabel}
           className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-background text-3xl text-primary-text"
         >

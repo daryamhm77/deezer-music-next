@@ -1,10 +1,13 @@
 "use client";
 
-import Image from "next/image";
-
+import { ShareButton } from "@/components/shared/share-actions";
+import { SongListRow } from "@/features/library/components/song-list-row";
 import { usePlaylistQuery } from "@/features/library/apis";
 import libraryMessages from "@/messages/en/library.json";
+import shareMessages from "@/messages/en/share.json";
 import { usePlayer } from "@/providers/player-provider";
+import { PATHS } from "@/routes/paths";
+import { buildPlaylistSharePayload } from "@/utils/share";
 
 type PlaylistDetailFeatureProps = {
   playlistId: string;
@@ -29,34 +32,45 @@ export function PlaylistDetailFeature({
     );
   }
 
+  const playlistUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}${PATHS.playlist(playlistId)}`
+      : PATHS.playlist(playlistId);
+
   return (
     <div>
-      <h1 className="mb-2 text-3xl font-bold text-white">{playlist.name}</h1>
-      <p className="mb-6 text-secondary-text">{playlist.songs.length} songs</p>
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="mb-2 text-3xl font-bold text-white">{playlist.name}</h1>
+          <p className="text-secondary-text">{playlist.songs.length} songs</p>
+          <p className="mt-1 text-xs text-secondary-text">
+            {shareMessages.previewOnly}
+          </p>
+        </div>
+        <ShareButton
+          {...buildPlaylistSharePayload({
+            name: playlist.name,
+            url: playlistUrl,
+            songCount: playlist.songs.length,
+          })}
+          label={shareMessages.sharePlaylist}
+        />
+      </div>
 
       {playlist.songs.length === 0 ? (
         <p className="text-secondary-text">{libraryMessages.emptyPlaylist}</p>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-1">
           {playlist.songs.map((song, index) => (
-            <button
-              key={song.id}
-              type="button"
-              onClick={() => playSong(playlist.songs, index)}
-              className="flex w-full cursor-pointer items-center gap-3 rounded-md p-2 text-left hover:bg-hover"
-            >
-              <Image
-                src={song.cover_image_url}
-                alt={song.title}
-                width={56}
-                height={56}
-                className="h-14 w-14 rounded-md object-cover"
-              />
-              <div>
-                <p className="font-semibold text-primary-text">{song.title}</p>
-                <p className="text-sm text-secondary-text">{song.artist}</p>
-              </div>
-            </button>
+            <SongListRow
+              key={`${song.id}-${index}`}
+              song={song}
+              onPlay={() => playSong(playlist.songs, index)}
+              removeMode="playlist"
+              playlistId={playlistId}
+              showFavorite
+              showAddToPlaylist
+            />
           ))}
         </div>
       )}

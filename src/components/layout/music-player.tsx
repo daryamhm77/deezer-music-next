@@ -17,6 +17,10 @@ import { HiOutlineMicrophone } from "react-icons/hi2";
 
 import { LyricsModal } from "@/components/layout/lyrics-modal";
 import {
+  OpenInDeezerButton,
+  ShareButton,
+} from "@/components/shared/share-actions";
+import {
   useAddSongToPlaylistMutation,
   useFavoriteSongsQuery,
   usePlaylistsQuery,
@@ -25,8 +29,10 @@ import {
 import { useSession } from "@/lib/auth-client";
 import libraryMessages from "@/messages/en/library.json";
 import playerMessages from "@/messages/en/player.json";
+import shareMessages from "@/messages/en/share.json";
 import { usePlayer } from "@/providers/player-provider";
 import { PATHS } from "@/routes/paths";
+import { buildSongSharePayload } from "@/utils/share";
 import Link from "next/link";
 
 function formatTime(time: number) {
@@ -219,19 +225,19 @@ export function MusicPlayer() {
               <p className="truncate font-normal text-secondary-text">
                 {currentMusic.artist}
               </p>
-              {!canPlay ? (
-                <p className="text-xs text-secondary-text">
-                  {playerMessages.noPreview}
-                </p>
-              ) : null}
+              <p className="truncate text-xs font-normal text-secondary-text">
+                {canPlay
+                  ? shareMessages.previewOnly
+                  : playerMessages.noPreview}
+              </p>
             </div>
 
-            <div className="flex shrink-0 items-center gap-2">
+            <div className="flex shrink-0 items-center gap-1">
               {session ? (
                 <>
                   <button
                     type="button"
-                    className="cursor-pointer text-lg text-secondary-text hover:text-white"
+                    className="grid h-8 w-8 cursor-pointer place-items-center text-secondary-text hover:text-white"
                     aria-label={
                       isFavorite
                         ? libraryMessages.unfavoriteSong
@@ -245,20 +251,20 @@ export function MusicPlayer() {
                     }
                   >
                     {isFavorite ? (
-                      <FaHeart className="text-primary" />
+                      <FaHeart size={18} className="text-primary" />
                     ) : (
-                      <FaRegHeart />
+                      <FaRegHeart size={18} />
                     )}
                   </button>
 
                   <div className="relative">
                     <button
                       type="button"
-                      className="cursor-pointer text-xl text-secondary-text hover:text-white"
+                      className="grid h-8 w-8 cursor-pointer place-items-center text-secondary-text hover:text-white"
                       aria-label={libraryMessages.addToPlaylist}
                       onClick={() => setPlaylistMenuOpen((prev) => !prev)}
                     >
-                      <MdPlaylistAdd />
+                      <MdPlaylistAdd size={20} />
                     </button>
                     {playlistMenuOpen ? (
                       <div className="absolute bottom-8 left-0 z-50 min-w-44 rounded-md border border-border bg-black py-1 shadow-lg">
@@ -297,13 +303,20 @@ export function MusicPlayer() {
                 </>
               ) : null}
 
+              <OpenInDeezerButton url={currentMusic.external_url} compact />
+              <ShareButton
+                compact
+                {...buildSongSharePayload(currentMusic)}
+                label={shareMessages.shareSong}
+              />
+
               <button
                 type="button"
-                className="cursor-pointer text-xl text-secondary-text hover:text-white"
+                className="grid h-8 w-8 cursor-pointer place-items-center text-secondary-text hover:text-white"
                 aria-label={playerMessages.lyrics}
                 onClick={() => setLyricsOpen(true)}
               >
-                <HiOutlineMicrophone />
+                <HiOutlineMicrophone size={18} />
               </button>
             </div>
           </div>
@@ -348,7 +361,7 @@ export function MusicPlayer() {
                 value={currentTime}
                 onChange={handleSeek}
                 disabled={!canPlay}
-                className="h-1 w-full appearance-none rounded bg-zinc-700 accent-white outline-none"
+                className="h-1 w-full appearance-none rounded bg-hover accent-primary outline-none"
               />
               <span className="text-sm font-normal text-secondary-text">
                 {formatTime(duration)}
@@ -401,7 +414,7 @@ export function MusicPlayer() {
               max={100}
               value={volume}
               onChange={handleVolumeChange}
-              className="h-1 w-[100px] appearance-none rounded bg-zinc-700 accent-white outline-none"
+              className="h-1 w-[100px] appearance-none rounded bg-hover accent-primary outline-none"
             />
           </div>
         </div>
