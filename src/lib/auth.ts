@@ -7,7 +7,11 @@ import {
   getMongoDb,
   resetMongoClient,
 } from "@/lib/mongodb";
-import { getSiteUrl, getTrustedOrigins } from "@/lib/seo";
+import {
+  getAuthAllowedHosts,
+  getSiteUrl,
+  getTrustedOrigins,
+} from "@/lib/seo";
 
 type Auth = ReturnType<typeof createAuth>;
 
@@ -43,12 +47,16 @@ function getGoogleSocialProvider() {
 function createAuth() {
   const client = getMongoClient();
   const db = getMongoDb();
-  const appUrl = getSiteUrl();
   const google = getGoogleSocialProvider();
+  // Resolve per request so git/preview hosts (*.vercel.app) work, not only BETTER_AUTH_URL.
+  const fallback = getSiteUrl();
 
   return betterAuth({
     secret: requireAuthSecret(),
-    baseURL: appUrl,
+    baseURL: {
+      allowedHosts: getAuthAllowedHosts(),
+      fallback,
+    },
     trustedOrigins: getTrustedOrigins(),
     database: mongodbAdapter(db, {
       client,

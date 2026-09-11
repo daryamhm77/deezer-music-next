@@ -74,10 +74,21 @@ MONGODB_DB_NAME=sea-music-player
 5. [ ] Google redirect URI matches Production URL (if using Google)  
 6. [ ] Smoke test: `/` loads, `/signup` + email works, `/login` works, library after onboarding  
 
+Preview / git branch URLs (`*-git-main-*.vercel.app`) are trusted via `https://*.vercel.app` in code — you do not need to list each one in Vercel env. Keep `BETTER_AUTH_URL` as your **stable Production** domain only.
+
+For Google OAuth on preview/git URLs, either:
+- test Google on the Production domain, or
+- add that exact host’s callback in Google Console:
+
+```text
+https://YOUR-DEPLOYMENT.vercel.app/api/auth/callback/google
+```
+
 ## Common failures
 
 | Symptom | Fix |
 | --- | --- |
+| `Invalid origin: …vercel.app` | Redeploy after trusted-origins fix; use Production domain or ensure code includes `*.vercel.app` |
 | `MONGODB_URI is not set` / 503 on auth | Add Atlas URI; check Network Access |
 | OAuth redirect mismatch | Add exact Production callback URI in Google Console |
 | Google button missing | Set `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true` and redeploy |

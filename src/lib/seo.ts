@@ -22,9 +22,37 @@ export function getSiteUrl() {
   );
 }
 
-/** Auth CSRF / callback origins (production + current Vercel deployment). */
+/**
+ * Hosts allowed for better-auth (exact host or pattern).
+ * Includes `*.vercel.app` so git / preview deployment URLs work.
+ */
+export function getAuthAllowedHosts() {
+  const hosts = new Set<string>(["localhost:*", "*.vercel.app"]);
+
+  for (const value of [
+    process.env.BETTER_AUTH_URL,
+    process.env.NEXT_PUBLIC_APP_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL,
+    process.env.VERCEL_URL,
+  ]) {
+    const origin = originFromHost(value);
+    if (!origin) continue;
+    try {
+      hosts.add(new URL(origin).host);
+    } catch {
+      /* ignore invalid */
+    }
+  }
+
+  return [...hosts];
+}
+
+/** Auth CSRF / callback origins (production + Vercel wildcards). */
 export function getTrustedOrigins() {
-  const origins = new Set<string>();
+  const origins = new Set<string>([
+    "http://localhost:3000",
+    "https://*.vercel.app",
+  ]);
 
   for (const value of [
     process.env.BETTER_AUTH_URL,
