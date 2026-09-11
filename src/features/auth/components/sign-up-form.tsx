@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MdOutlineWaves } from "react-icons/md";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +12,8 @@ import {
   signUpSchema,
   type SignUpValues,
 } from "@/features/auth/schemas/sign-up.schema";
-import { signUp } from "@/lib/auth-client";
+import { redirectAfterAuth } from "@/features/auth/utils/redirect-after-auth";
+import { signUp, useSession } from "@/lib/auth-client";
 import authMessages from "@/messages/en/auth.json";
 import { PATHS } from "@/routes/paths";
 
@@ -24,8 +24,9 @@ function fieldError(message?: string) {
 }
 
 export function SignUpForm() {
-  const router = useRouter();
+  const { data: session, isPending: sessionPending } = useSession();
   const [message, setMessage] = useState("");
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const {
     register,
     handleSubmit,
@@ -34,6 +35,12 @@ export function SignUpForm() {
     resolver: zodResolver(signUpSchema),
     mode: "onChange",
   });
+
+  useEffect(() => {
+    if (sessionPending || !session?.user || isRedirecting) return;
+    setIsRedirecting(true);
+    void redirectAfterAuth("sign-in");
+  }, [session, sessionPending, isRedirecting]);
 
   const onSubmit = handleSubmit(async (values) => {
     setMessage("");
@@ -50,9 +57,17 @@ export function SignUpForm() {
     }
 
     setMessage(authMessages.signUpSuccess);
-    router.push(PATHS.onboarding);
-    router.refresh();
+    setIsRedirecting(true);
+    await redirectAfterAuth("sign-up");
   });
+
+  if (sessionPending || session?.user || isRedirecting) {
+    return (
+      <div className="flex w-[90%] max-w-[400px] flex-col items-center rounded-md bg-background p-12 text-secondary-text">
+        {authMessages.redirecting}
+      </div>
+    );
+  }
 
   return (
     <div className="flex w-[90%] max-w-[400px] flex-col items-center rounded-md bg-background p-12">
@@ -62,7 +77,7 @@ export function SignUpForm() {
       </h1>
 
       <div className="mb-6 w-full">
-        <GoogleAuthButton />
+        <GoogleAuthButton callbackURL={PATHS.home} />
       </div>
 
       <div className="mb-6 flex w-full items-center gap-3 text-secondary-text">
@@ -100,7 +115,7 @@ export function SignUpForm() {
         />
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isRedirecting}
           className="w-full cursor-pointer rounded-full bg-primary py-3 font-bold text-white disabled:opacity-60"
         >
           {authMessages.continue}

@@ -1,25 +1,29 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useOnboardingStatusQuery } from "@/features/onboarding/apis";
-import { useSession } from "@/lib/auth-client";
+import { authClient, useSession } from "@/lib/auth-client";
 import { PATHS } from "@/routes/paths";
 
 type OnboardingGateProps = {
   children: React.ReactNode;
 };
 
+type AuthCheck = "pending" | "user" | "guest";
+
 /**
- * Redirects logged-in users who still need onboarding.
- * Guests always get children immediately so public SSR HTML stays crawlable.
+ * Private-route gate: incomplete onboarding → /onboarding; done → stay.
+ * Re-fetches session once before treating the visitor as a guest (signup race).
  */
 export function OnboardingGate({ children }: OnboardingGateProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { data: session, isPending: sessionPending } = useSession();
-  const isLoggedIn = Boolean(session);
+  const [authCheck, setAuthCheck] = useState<AuthCheck>("pending");
+
+  const isLoggedIn = authCheck === "user";
   const { data: status, isPending: statusPending } = useOnboardingStatusQuery(
     isLoggedIn,
   );
@@ -29,7 +33,32 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
   useEffect(() => {
     if (sessionPending) return;
 
-    if (!isLoggedIn) {
+    if (session?.user) {
+      setAuthCheck("user");
+      return;
+    }
+
+    let cancelled = false;
+
+    void authClient
+      .getSession({ fetchOptions: { cache: "no-store" } })
+      .then(({ data }) => {
+        if (cancelled) return;
+        setAuthCheck(data?.user ? "user" : "guest");
+      })
+      .catch(() => {
+        if (!cancelled) setAuthCheck("guest");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [session, sessionPending]);
+
+  useEffect(() => {
+    if (authCheck === "pending") return;
+
+    if (authCheck === "guest") {
       if (isOnboardingRoute) {
         router.replace(PATHS.login);
       }
@@ -46,17 +75,17 @@ export function OnboardingGate({ children }: OnboardingGateProps) {
     if (status.onboardingCompleted && isOnboardingRoute) {
       router.replace(PATHS.home);
     }
-  }, [
-    sessionPending,
-    isLoggedIn,
-    status,
-    statusPending,
-    isOnboardingRoute,
-    router,
-  ]);
+  }, [authCheck, status, statusPending, isOnboardingRoute, router]);
 
-  // Never replace guest / pending HTML with a loading shell — crawlers need content.
-  if (!isLoggedIn) {
+  if (authCheck === "pending") {
+    return (
+      <div className="flex min-h-screen items-center justify-center text-secondary-text">
+        Checking session...
+      </div>
+    );
+  }
+
+  if (authCheck === "guest") {
     if (isOnboardingRoute) {
       return (
         <div className="flex min-h-screen items-center justify-center text-secondary-text">

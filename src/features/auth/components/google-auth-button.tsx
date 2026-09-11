@@ -13,7 +13,7 @@ type GoogleAuthButtonProps = {
 
 /** Shown when `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true` (set alongside Google secrets on Vercel). */
 export function GoogleAuthButton({
-  callbackURL = PATHS.onboarding,
+  callbackURL = PATHS.home,
 }: GoogleAuthButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
+import { getUserPreferences } from "@/connections/user-preferences.repository";
 import { OnboardingFeature } from "@/features/onboarding";
-import { OnboardingGate } from "@/features/onboarding/components/onboarding-gate";
+import { getSession } from "@/lib/auth-session";
 import { buildPageMetadata } from "@/lib/seo";
 import { PATHS } from "@/routes/paths";
 
@@ -14,10 +16,18 @@ export const metadata: Metadata = buildPageMetadata({
   index: false,
 });
 
-export default function OnboardingPage() {
-  return (
-    <OnboardingGate>
-      <OnboardingFeature />
-    </OnboardingGate>
-  );
+/** Server-gated: session required; completed users skip to home. */
+export default async function OnboardingPage() {
+  const session = await getSession();
+
+  if (!session?.user) {
+    redirect(PATHS.login);
+  }
+
+  const preferences = await getUserPreferences(session.user.id);
+  if (preferences.onboardingCompleted) {
+    redirect(PATHS.home);
+  }
+
+  return <OnboardingFeature />;
 }
