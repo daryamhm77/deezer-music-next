@@ -8,6 +8,7 @@ import { MdOutlineWaves } from "react-icons/md";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { GoogleAuthButton } from "@/features/auth/components/google-auth-button";
+import { PasswordField } from "@/features/auth/components/password-field";
 import {
   signInSchema,
   type SignInValues,
@@ -16,13 +17,19 @@ import { signIn } from "@/lib/auth-client";
 import authMessages from "@/messages/en/auth.json";
 import { PATHS } from "@/routes/paths";
 
+function fieldError(message?: string) {
+  if (!message) return undefined;
+  if (message === "password.min") return authMessages.passwordTooShort;
+  return message;
+}
+
 export function SignInForm() {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
     mode: "onChange",
@@ -77,12 +84,10 @@ export function SignInForm() {
           className="mb-6 w-full rounded-md border border-border p-2 text-primary-text outline-none placeholder:text-secondary-text focus:border-secondary-text"
           {...register("email")}
         />
-        <input
-          type="password"
-          placeholder={authMessages.passwordPlaceholder}
+        <PasswordField
+          registration={register("password")}
           autoComplete="current-password"
-          className="mb-6 w-full rounded-md border border-border p-2 text-primary-text outline-none placeholder:text-secondary-text focus:border-secondary-text"
-          {...register("password")}
+          error={fieldError(errors.password?.message)}
         />
         <button
           type="submit"
