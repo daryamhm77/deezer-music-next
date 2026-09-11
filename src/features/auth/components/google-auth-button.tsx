@@ -11,11 +11,16 @@ type GoogleAuthButtonProps = {
   callbackURL?: string;
 };
 
+/** Shown when `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true` (set alongside Google secrets on Vercel). */
 export function GoogleAuthButton({
   callbackURL = PATHS.onboarding,
 }: GoogleAuthButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  if (process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED !== "true") {
+    return null;
+  }
 
   const handleGoogle = async () => {
     setError("");

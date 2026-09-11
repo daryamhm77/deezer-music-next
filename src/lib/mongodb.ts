@@ -1,19 +1,24 @@
 import { MongoClient, type Db } from "mongodb";
 
-const uri = process.env.MONGODB_URI;
-
-if (!uri) {
-  throw new Error("MONGODB_URI is not set");
-}
-
-const options = {
-  serverSelectionTimeoutMS: 5_000,
-  connectTimeoutMS: 5_000,
-};
-
 const globalForMongo = globalThis as unknown as {
   mongoClient?: MongoClient;
   mongoConnectPromise?: Promise<MongoClient>;
+};
+
+function getMongoUri() {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    throw new Error("MONGODB_URI is not set");
+  }
+  return uri;
+}
+
+const options = {
+  maxPoolSize: 10,
+  minPoolSize: 0,
+  maxIdleTimeMS: 10_000,
+  serverSelectionTimeoutMS: 5_000,
+  connectTimeoutMS: 5_000,
 };
 
 export function resetMongoClient() {
@@ -25,7 +30,7 @@ export function resetMongoClient() {
 
 export function getMongoClient() {
   if (!globalForMongo.mongoClient) {
-    globalForMongo.mongoClient = new MongoClient(uri!, options);
+    globalForMongo.mongoClient = new MongoClient(getMongoUri(), options);
   }
 
   return globalForMongo.mongoClient;

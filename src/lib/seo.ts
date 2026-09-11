@@ -1,11 +1,43 @@
 import type { Metadata } from "next";
 
+function originFromHost(value?: string | null) {
+  if (!value) return undefined;
+  const trimmed = value.replace(/\/$/, "");
+  if (!trimmed) return undefined;
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
+/** Canonical public origin. Preview deploys use the unique Vercel URL. */
 export function getSiteUrl() {
+  if (process.env.VERCEL_ENV === "preview" && process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL.replace(/\/$/, "")}`;
+  }
+
   return (
-    process.env.BETTER_AUTH_URL?.replace(/\/$/, "") ||
-    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ||
+    originFromHost(process.env.BETTER_AUTH_URL) ||
+    originFromHost(process.env.NEXT_PUBLIC_APP_URL) ||
+    originFromHost(process.env.VERCEL_PROJECT_PRODUCTION_URL) ||
+    originFromHost(process.env.VERCEL_URL) ||
     "http://localhost:3000"
   );
+}
+
+/** Auth CSRF / callback origins (production + current Vercel deployment). */
+export function getTrustedOrigins() {
+  const origins = new Set<string>();
+
+  for (const value of [
+    process.env.BETTER_AUTH_URL,
+    process.env.NEXT_PUBLIC_APP_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL,
+    process.env.VERCEL_URL,
+  ]) {
+    const origin = originFromHost(value);
+    if (origin) origins.add(origin);
+  }
+
+  origins.add(getSiteUrl());
+  return [...origins];
 }
 
 type BuildPageMetadataInput = {

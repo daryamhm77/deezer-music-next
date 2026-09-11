@@ -41,7 +41,7 @@ async function withMongo(
     } catch (retryError) {
       console.error("[auth] request failed after Mongo reconnect:", retryError);
       return Response.json(
-        { message: "Database unavailable. Is MongoDB running on port 27018?" },
+        { message: "Database unavailable. Check MONGODB_URI." },
         { status: 503 },
       );
     }

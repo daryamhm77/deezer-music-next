@@ -7,6 +7,7 @@ import {
   getMongoDb,
   resetMongoClient,
 } from "@/lib/mongodb";
+import { getSiteUrl, getTrustedOrigins } from "@/lib/seo";
 
 type Auth = ReturnType<typeof createAuth>;
 
@@ -14,32 +15,55 @@ const globalForAuth = globalThis as unknown as {
   seaAuth?: Auth;
 };
 
+function requireAuthSecret() {
+  const secret = process.env.BETTER_AUTH_SECRET?.trim();
+  if (!secret || secret.length < 32) {
+    throw new Error(
+      "BETTER_AUTH_SECRET must be set (openssl rand -base64 32).",
+    );
+  }
+  return secret;
+}
+
+function getGoogleSocialProvider() {
+  const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
+  if (!clientId || !clientSecret) {
+    return undefined;
+  }
+  return {
+    google: {
+      clientId,
+      clientSecret,
+      prompt: "select_account" as const,
+    },
+  };
+}
+
 function createAuth() {
   const client = getMongoClient();
   const db = getMongoDb();
+  const appUrl = getSiteUrl();
+  const google = getGoogleSocialProvider();
 
   return betterAuth({
-    baseURL: process.env.BETTER_AUTH_URL,
+    secret: requireAuthSecret(),
+    baseURL: appUrl,
+    trustedOrigins: getTrustedOrigins(),
     database: mongodbAdapter(db, {
       client,
-      // Standalone Docker Mongo has no replica set — disable transactions.
+      // Local Docker Mongo has no replica set. Atlas still works with this off.
       transaction: false,
     }),
     emailAndPassword: {
       enabled: true,
       minPasswordLength: 8,
     },
-    socialProviders: {
-      google: {
-        clientId: process.env.GOOGLE_CLIENT_ID as string,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-        prompt: "select_account",
-      },
-    },
+    ...(google ? { socialProviders: google } : {}),
     account: {
       accountLinking: {
         enabled: true,
-        trustedProviders: ["google"],
+        trustedProviders: google ? ["google"] : [],
       },
     },
     plugins: [nextCookies()],
